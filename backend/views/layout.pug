@@ -1,0 +1,19 @@
+doctype html 
+html 
+    //- page script + header
+    head
+        include includes/head.pug
+        block scripts
+    body
+        //- page navigation
+        include includes/nav.pug
+        .py-4
+        .container
+            //- page header
+            h1.title.mb-1
+                block header
+            .bg-accent.mb-4(style='width: 7vmin; height: 0.5vmin;')
+            //- page content
+            block content
+        //- page footer
+        include includes/foot.pug
