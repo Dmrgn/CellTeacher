@@ -5,7 +5,7 @@ const router = express.Router();
 const sessions = require('../utils/sessions');
 
 router.get('/', (req, res) => {
-    res.render('login');
+    res.redirect("/index");
 });
 
 router.get('/index', (req, res) => {
@@ -13,7 +13,7 @@ router.get('/index', (req, res) => {
     if (isSessionValid.valid) {
         res.status(200).render('index', {name:req.cookies.name});
     } else {
-        res.status(401).send(isSessionValid.message);
+        res.status(200).render('index', {name:"User"});
     }
 });
 

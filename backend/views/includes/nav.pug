@@ -1,13 +1,42 @@
-nav.navbar.navbar-expand-lg.py-4.navbar-dark.bg-accent.sticky-top(style='position: sticky;')
-    .container
-        a.navbar-brand(class='.d-md-none', style='font-size: 4vh', href='/index')
-            strong Cell Teacher
-            ul.navbar-nav.me-auto.mt-2.mt-lg-0
-                li.nav-item.active
-                    a.nav-link(href='/index') Home
-                li.nav-item
-                    a.nav-link(href='/users/login') Login
-                li.nav-item
-                    a.nav-link(href='/users/create') Register
-                li.nav-item
-                    a.nav-link(href='/users/manage') My Account
+html
+  head
+  body
+    nav.navbar(role='navigation', aria-label='main navigation')
+      .navbar-brand
+        a.navbar-item(href='/index')
+          strong Cell Teacher
+      .navbar-menu
+        .navbar-start
+          a.navbar-item(href='/index')
+            | Home
+          a.navbar-item(href='/users/manage')
+            | Manage Account
+          .navbar-item.has-dropdown.is-hoverable
+            a.navbar-link
+              | Classes
+            .navbar-dropdown
+              a.navbar-item(href='/classes')
+                | List Classes
+              hr.navbar-divider
+              a.navbar-item(href='/classes/create')
+                | Create Class
+              a.navbar-item(href='/classes/delete')
+                | Delete Class
+              a.navbar-item(href='/classes/manage')
+                | Manage Class
+          .navbar-item.has-dropdown.is-hoverable
+            a.navbar-link
+              | Levels
+            .navbar-dropdown
+              a.navbar-item(href='/levels')
+                | List Levels
+              hr.navbar-divider
+              a.navbar-item(href='/levels')
+                | Get Level
+        .navbar-end
+          .navbar-item
+            .buttons
+              a.button(href='/users/register')
+                strong Register
+              a.button(href='/users/login')
+                | Log in

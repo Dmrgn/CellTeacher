@@ -1,0 +1,17 @@
+extends layout
+
+block header
+    p Register
+
+block content
+    h1 Register'
+    .is-flex.is-flex-direction-column
+        input#username(type="text", name="username", placeholder="Username")
+        input#password1(type="password", name="password", placeholder="Password")
+        input#password2(type="password", name="password", placeholder="Rewrite Password")
+        input#submit(type="button", value="Login")
+    p#complainer
+
+block scripts 
+    script(src="js/utils.js" defer)
+    script(src="js/register.js" defer)
