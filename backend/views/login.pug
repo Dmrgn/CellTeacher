@@ -8,8 +8,12 @@ block content
     .is-flex.is-flex-direction-column
         input#username(type="text", name="username", placeholder="Username")
         input#password(type="password", name="password", placeholder="Password")
+        p !{captcha}
+        input#captcha(type="text", name="captcha", placeholder="Captcha")
         input#submit(type="button", value="Login")
     p#complainer
+    script.
+        const captchaId = #{captchaId}
 
 block scripts 
     script(src="js/utils.js" defer)

@@ -25,11 +25,8 @@ app.get('/', indexRouter);
 app.get('/index', indexRouter);
 app.get('/error', errorRouter);
 
-app.get('/users/register', usersRouter);
-app.get('/users/login', usersRouter);
-
-app.post('/users/register', usersRouter);
-app.post('/users/login', usersRouter);
+app.get('/users/*', usersRouter);
+app.post('/users/*', usersRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log("Listening on port " + port));

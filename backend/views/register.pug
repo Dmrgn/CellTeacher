@@ -9,8 +9,12 @@ block content
         input#username(type="text", name="username", placeholder="Username")
         input#password1(type="password", name="password", placeholder="Password")
         input#password2(type="password", name="password", placeholder="Rewrite Password")
+        p !{captcha}
+        input#captcha(type="text", name="captcha", placeholder="Captcha")
         input#submit(type="button", value="Login")
     p#complainer
+    script.
+        const captchaId = #{captchaId}
 
 block scripts 
     script(src="js/utils.js" defer)

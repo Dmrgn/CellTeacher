@@ -4,10 +4,15 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const router = express.Router();
 const sessions = require('../utils/sessions');
+const captchas = require('../utils/captchas');
 
 const users = JSON.parse(fs.readFileSync(path.resolve('data/users.json')));
 
 router.post('/users/login', async (req, res) => {
+    const captcha = captchas.validate(req.body.captcha.text, req.body.captcha.id);
+    if (!captcha.valid) {
+        return res.status(422).send("/error?message=Captcha Failed");
+    }
     const user = users.find(user => user.name === req.body.name);
     if (user == null) {
         return res.status(401).send("Could Not Find User");
@@ -22,24 +27,15 @@ router.post('/users/login', async (req, res) => {
         return res.status(401).send("Password Mismatch");
     } catch (err) {
         console.log(err);
-        res.status(500).send();
+        return res.status(500).send("Server Error");
     }
-});
-
-router.get('/users/login', (req, res) => {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
-    if (isSessionValid.valid) {
-        res.redirect("/index");
-    } else {
-        res.status(200).render("login");
-    }
-});
-
-router.get('/users/register', (req, res) => {
-    res.render("register");
 });
 
 router.post('/users/register', async (req, res) => {
+    const captcha = captchas.validate(req.body.captcha.text, req.body.captcha.id);
+    if (!captcha.valid) {
+        return res.status(422).send("/error?message=Captcha Failed");
+    }
     try {
         // check if user already exists
         let exists = false;
@@ -61,8 +57,24 @@ router.post('/users/register', async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(500).redirect("/error");
+        res.status(500).redirect("Server Error");
     }
 });
+
+router.get('/users/login', (req, res) => {
+    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    if (isSessionValid.valid) {
+        res.redirect("/index");
+    } else {
+        const captcha = captchas.createCaptcha();
+        res.status(200).render("login", {captcha:captcha.data,captchaId:captcha.id});
+    }
+});
+
+router.get('/users/register', (req, res) => {
+    const captcha = captchas.createCaptcha();
+    res.render("register", {captcha:captcha.data,captchaId:captcha.id});
+});
+
 
 module.exports = router;

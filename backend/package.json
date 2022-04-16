@@ -19,6 +19,7 @@
     "morgan": "^1.10.0",
     "path": "^0.12.7",
     "pug": "^3.0.2",
-    "rand-token": "^1.0.1"
+    "rand-token": "^1.0.1",
+    "svg-captcha": "^1.4.0"
   }
 }
