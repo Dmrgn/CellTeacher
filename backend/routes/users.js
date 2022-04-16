@@ -46,9 +46,11 @@ router.post('/users/register', async (req, res) => {
         })
         if (!exists) {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            const type = (req.body.type == "teacher") ? "teacher" : "student";
             users.push({
                 name: req.body.name,
-                password: hashedPassword
+                password: hashedPassword,
+                type: type,
             })
             fs.writeFileSync(path.join("data/users.json"), JSON.stringify(users));
             res.status(201).send("User created succesfully.");
@@ -75,6 +77,53 @@ router.get('/users/register', (req, res) => {
     const captcha = captchas.createCaptcha();
     res.render("register", {captcha:captcha.data,captchaId:captcha.id});
 });
+
+router.get('/users/delete', async (req, res) => {
+    try {
+        const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+        if (isSessionValid.valid) {
+            // checks if user exists
+            const exists = getUserI(req.cookies.name);
+            if (exists != false) {
+                users.splice(1,exists);
+                fs.writeFileSync(path.join("data/users.json"), JSON.stringify(users));
+                res.status(200).redirect("/users/login");
+            } else {
+                res.status(404).redirect("/error?message=User does not exist.");
+            }
+        } else {
+            res.status(401).redirect("/users/login");
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).redirect("/error?message=Could not delete user.");
+    }
+});
+
+router.get('/users/manage', (req, res) => {
+    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    if (isSessionValid.valid) {
+        const user = getUser(req.cookies.name);
+        if (!user)
+            return res.status(403).redirect("/error?message=User not found");
+        res.render("manage", {name:user.name, type:user.type});
+    } else {
+        res.status(401).redirect("/users/login");
+    }
+});
+
+function getUserI(name) {
+    for (let i = 0 ; i < users.length; i++) {
+        if (users[i].name == name) {
+            return i;
+        }
+    }
+    return false;
+}
+
+function getUser(name) {
+    return users[getUserI(name)];
+}
 
 
 module.exports = router;

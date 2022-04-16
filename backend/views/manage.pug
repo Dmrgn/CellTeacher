@@ -1,0 +1,21 @@
+extends layout
+
+block header
+    p Manage Account
+
+block content
+    h1 
+        strong Account Name
+    h3 #{name}
+    h1 
+        strong Account Type
+    h3 #{type}
+    input#delete.button(type="button", value="Delete", style="background-color:red;")
+    p#complainer
+    script.
+        const name = "#{name}";
+        const type = "#{type}";
+
+block scripts 
+    script(src="js/utils.js" defer)
+    script(src="js/manage.js" defer) 

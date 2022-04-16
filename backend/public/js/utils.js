@@ -13,6 +13,11 @@ function setCookieValue(key, value) {
     document.cookie = `${key}=${value}; Secure`;
 }
 
+// delete the value of a cookie with the given key
+function deleteCookie(key) {
+    document.cookie = `${key}=; Max-Age=0; path=/; domain=${location.hostname}`;
+}
+
 // send an http request to the specified url with the specified method (GET POST etc.)
 // passing the data parameter as the request body in the json format
 async function sendRequest(url, method, data) {

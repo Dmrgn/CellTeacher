@@ -1,0 +1,12 @@
+[
+    {
+        "id":0,
+        "name":"CompSci Class",
+        "students":[
+            "Daniel"
+        ],
+        "teachers":[
+            "Teacher"
+        ]
+    }
+]

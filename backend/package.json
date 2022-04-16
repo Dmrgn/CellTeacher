@@ -8,6 +8,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
+  "nodemonConfig": {
+    "ignore": ["*.json"]
+  },
   "author": "Daniel Morgan",
   "license": "GPL",
   "dependencies": {
