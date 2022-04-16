@@ -29,9 +29,11 @@ app.get('/error', errorRouter);
 app.get('/classes', classesRouter);
 app.get('/classes/*', classesRouter);
 app.post('/classes/*', classesRouter);
+app.delete('/classes/delete', classesRouter);
 
 app.get('/users/*', usersRouter);
 app.post('/users/*', usersRouter);
+app.delete('/users/delete', usersRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log("Listening on port " + port));

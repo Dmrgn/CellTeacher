@@ -11,11 +11,11 @@ const users = require('../utils/users');
 router.post('/users/login', async (req, res) => {
     const captcha = captchas.validate(req.body.captcha.text, req.body.captcha.id);
     if (!captcha.valid) {
-        return res.status(422).send("/error?message=Captcha Failed");
+        return res.status(422).send("Captcha Failed");
     }
     const user = users.find(user => user.name === req.body.name);
     if (user == null) {
-        return res.status(401).send("Could Not Find User");
+        return res.status(402).send("Could Not Find User");
     }
     try {
         if (await bcrypt.compare(req.body.password, user.password)) {
@@ -24,7 +24,7 @@ router.post('/users/login', async (req, res) => {
             res.cookie("token", session.token, {overwrite: true});
             return res.status(200).send("Logged in successfully");
         }
-        return res.status(401).send("Password Mismatch");
+        return res.status(403).send("Password Mismatch");
     } catch (err) {
         console.log(err);
         return res.status(500).send("Server Error");
@@ -34,7 +34,7 @@ router.post('/users/login', async (req, res) => {
 router.post('/users/register', async (req, res) => {
     const captcha = captchas.validate(req.body.captcha.text, req.body.captcha.id);
     if (!captcha.valid) {
-        return res.status(422).send("/error?message=Captcha Failed");
+        return res.status(422).send("Captcha Failed");
     }
     try {
         // check if user already exists
@@ -59,26 +59,26 @@ router.post('/users/register', async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(500).redirect("Server Error");
+        return res.status(500).send("Server Error");
     }
 });
 
 router.get('/users/login', (req, res) => {
     const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
     if (isSessionValid.valid) {
-        res.redirect("/index");
+        return res.status(201).send("Already logged in.");
     } else {
         const captcha = captchas.createCaptcha();
-        res.status(200).render("login", {captcha:captcha.data,captchaId:captcha.id});
+        res.status(200).json({captcha:captcha.data,captchaId:captcha.id});
     }
 });
 
 router.get('/users/register', (req, res) => {
     const captcha = captchas.createCaptcha();
-    res.render("register", {captcha:captcha.data,captchaId:captcha.id});
+    res.json({captcha:captcha.data,captchaId:captcha.id});
 });
 
-router.get('/users/delete', async (req, res) => {
+router.delete('/users/delete', async (req, res) => {
     try {
         const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
         if (isSessionValid.valid) {
@@ -87,16 +87,16 @@ router.get('/users/delete', async (req, res) => {
             if (exists != false) {
                 users.splice(1,exists);
                 fs.writeFileSync(path.join("data/users.json"), JSON.stringify(users));
-                res.status(200).redirect("/users/login");
+                return res.status(200).send("User deleted.");
             } else {
-                res.status(404).redirect("/error?message=User does not exist.");
+                return res.status(404).send("User doesn't exist.");
             }
         } else {
-            res.status(401).redirect("/users/login");
+            return res.status(401).send("Please login first.");
         }
     } catch (err) {
         console.log(err);
-        res.status(500).redirect("/error?message=Could not delete user.");
+        return res.status(500).send("Server Error.");
     }
 });
 
@@ -105,10 +105,10 @@ router.get('/users/manage', (req, res) => {
     if (isSessionValid.valid) {
         const user = getUser(req.cookies.name);
         if (!user)
-            return res.status(403).redirect("/error?message=User not found");
-        res.render("manage", {name:user.name, type:user.type});
+            return res.status(404).send("User not found.");
+        res.json({name:user.name, type:user.type, classes:user.classes});
     } else {
-        res.status(401).redirect("/users/login");
+        return res.status(401).send("Please login first.");
     }
 });
 

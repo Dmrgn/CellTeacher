@@ -1,15 +1,26 @@
 [{
-    "name": "danielrmorgan11@gmail.com",
+    "name": "Daniel",
     "password": "$2b$10$yix89lOpo7go4Db8YCM83uvU5VpnepYrYO9UQXhYA/fBl4MbZndka",
-    "type": "student",
-    "classes": [
-        0
-    ]
+    "type": "teacher",
+    "classes": [1]
 }, {
-    "name": "thing@gmail.com",
+    "name": "Thing",
     "password": "$2b$10$B15jG9nIPH.qYG6HGINYUOl90Kea9l.nUMA5rvpaUnagHvNIu6Wpm",
     "type": "student",
-    "classes": [
-        0
-    ]
+    "classes": []
+}, {
+    "name": "Other",
+    "password": "$2b$10$B15jG9nIPH.qYG6HGINYUOl90Kea9l.nUMA5rvpaUnagHvNIu6Wpm",
+    "type": "student",
+    "classes": [1]
+}, {
+    "name": "Person",
+    "password": "$2b$10$B15jG9nIPH.qYG6HGINYUOl90Kea9l.nUMA5rvpaUnagHvNIu6Wpm",
+    "type": "student",
+    "classes": [2]
+}, {
+    "name": "Person2",
+    "password": "$2b$10$B15jG9nIPH.qYG6HGINYUOl90Kea9l.nUMA5rvpaUnagHvNIu6Wpm",
+    "type": "teacher",
+    "classes": []
 }]
