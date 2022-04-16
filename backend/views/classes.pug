@@ -1,0 +1,17 @@
+extends layout
+
+block header
+    p Classes
+
+block content
+    h1 Classes
+    h3 Account Type
+    h3 #{type}
+    each c in classes
+        a(href="/classes/"+c.id)= c.name
+
+    p#complainer
+
+block scripts 
+    script(src="js/utils.js" defer)
+    script(src="js/classes.js" defer)

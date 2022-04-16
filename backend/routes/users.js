@@ -5,8 +5,8 @@ const fs = require('fs');
 const router = express.Router();
 const sessions = require('../utils/sessions');
 const captchas = require('../utils/captchas');
+const users = require('../utils/users');
 
-const users = JSON.parse(fs.readFileSync(path.resolve('data/users.json')));
 
 router.post('/users/login', async (req, res) => {
     const captcha = captchas.validate(req.body.captcha.text, req.body.captcha.id);
@@ -124,6 +124,5 @@ function getUserI(name) {
 function getUser(name) {
     return users[getUserI(name)];
 }
-
 
 module.exports = router;

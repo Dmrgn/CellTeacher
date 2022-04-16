@@ -15,6 +15,7 @@ app.use(cookieParser());
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const errorRouter = require("./routes/error");
+const classesRouter = require("./routes/classes");
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -24,6 +25,10 @@ app.use('/users', express.static('public'));
 app.get('/', indexRouter);
 app.get('/index', indexRouter);
 app.get('/error', errorRouter);
+
+app.get('/classes', classesRouter);
+app.get('/classes/*', classesRouter);
+app.post('/classes/*', classesRouter);
 
 app.get('/users/*', usersRouter);
 app.post('/users/*', usersRouter);

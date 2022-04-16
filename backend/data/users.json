@@ -1,1 +1,15 @@
-[{"name":"Daniel","password":"$2b$10$yix89lOpo7go4Db8YCM83uvU5VpnepYrYO9UQXhYA/fBl4MbZndka","type":"student"}]
+[{
+    "name": "danielrmorgan11@gmail.com",
+    "password": "$2b$10$yix89lOpo7go4Db8YCM83uvU5VpnepYrYO9UQXhYA/fBl4MbZndka",
+    "type": "student",
+    "classes": [
+        0
+    ]
+}, {
+    "name": "thing@gmail.com",
+    "password": "$2b$10$B15jG9nIPH.qYG6HGINYUOl90Kea9l.nUMA5rvpaUnagHvNIu6Wpm",
+    "type": "student",
+    "classes": [
+        0
+    ]
+}]
