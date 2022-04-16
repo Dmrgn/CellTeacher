@@ -52,10 +52,9 @@ function drawBoard(board) {
 }
 
 function step(board) {
-  // let arr = Array(100);
-  // for (let x = 0; x < 100; x++)
-  //   arr[x] = Array(100).fill(0);
-  let arr = [...board];
+  let arr = Array(100);
+  for (let x = 0; x < 100; x++)
+    arr[x] = board[x].slice();
   for (let x = 0; x < board.length; x++) {
     for (let y = 0; y < board[x].length; y++) {
       if (board[x][y] == 1) continue;
@@ -63,9 +62,9 @@ function step(board) {
         if (board[x + generatorFacing[0]][y + generatorFacing[1]] == 0)
           arr[x + generatorFacing[0]][y + generatorFacing[1]] = generatorType;
       } else if (board[x][y] == 4) {
-        print("dupe in loc " + board[x + duplicatorIn[0]][y + duplicatorIn[1]] + " " + board[x + duplicatorOut[0]][y + duplicatorOut[1]]);
-        if ((board[x + duplicatorIn[0]][y + duplicatorIn[1]] > 1) && (board[x + duplicatorOut[0]][y + duplicatorOut[1]] == 0)) {
-          arr[x + duplicatorOut[0]][y + duplicatorOut[1]] = board[x + duplicatorIn[0]][y + duplicatorIn[1]];
+        if (x + duplicatorIn[0] >= 0 && y + duplicatorIn[1] >= 0 && x + duplicatorOut[0] < 100 && y + duplicatorOut[1] < 100)
+          if ((board[x + duplicatorIn[0]][y + duplicatorIn[1]] > 1) && (board[x + duplicatorOut[0]][y + duplicatorOut[1]] == 0)) {
+            arr[x + duplicatorOut[0]][y + duplicatorOut[1]] = board[x + duplicatorIn[0]][y + duplicatorIn[1]];
         }
       }
     }
