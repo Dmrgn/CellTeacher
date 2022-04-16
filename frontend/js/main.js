@@ -1,44 +1,66 @@
 let board;
+let boardSize;
 let cellSize;
+let sideBarSize;
 let cols;
+let play;
 let xOffset, yOffset;
 let currCell;
-let dragging;
+let pusherFacing, pusherLimit;
 let generatorFacing, generatorType;
 let duplicatorIn, duplicatorOut;
 let dirUp, dirLeft, dirDown, dirRight;
 
 function setup() {
-    createCanvas(1000, 1000);
-    board = Array(100);
-    for (let x = 0; x < 100; x++)
-        board[x] = Array(100).fill(0);
-    cellSize = 10;
+    frameRate(10);
 
-    cols = [color(223), color(0), color(255, 0, 0), color(255, 255, 0), color(0, 255, 255), color(0, 255, 0)];
+    boardSize = 60;
+    cellSize = 15;
+    sideBarSize = 60;
+
+    createCanvas(boardSize*cellSize + 200, boardSize*cellSize);
+
+    board = Array(boardSize);
+    for (let x = 0; x < boardSize; x++)
+        board[x] = Array(boardSize).fill(0);
+
+    cols = [color(223), color(0), color(165, 114, 63), color(255, 255, 0), color(0, 255, 255), color(255, 0, 255), color(0, 255, 0)];
     xOffset = 200;
     yOffset = 0;
     currCell = 1;
-    dragging = false;
 
     dirUp = [0, -1];
     dirLeft = [-1, 0];
     dirDown = [0, 1];
     dirRight = [1, 0];
 
+    pusherFacing = dirLeft;
+    pusherLimit = 3;
     generatorFacing = dirUp;
     generatorType = 2;
-    duplicatorIn = dirLeft;
-    duplicatorOut = dirRight;
+    duplicatorIn = dirDown;
+    duplicatorOut = dirUp;
+
+    play = false;
+}
+
+function keyTyped() {
+    if (key === ' ') {
+        play = !play;
+    }
 }
 
 function draw() {
     for (let x = 0; x < cols.length; x++) {
         fill(cols[x]);
-        rect(0, 200 * x, 200, 200);
+        rect(0, sideBarSize * x, 200, sideBarSize);
     }
-    mouseMoved();
-    board = step(board);
+    fill(play ? color(0, 255, 0) : color(255, 0, 0));
+    rect(75, 500, 50, 50);
+    if (play) {
+        board = step(board);
+    }
+    // } else if (mouseIsPressed) mouseDown();
     drawBoard(board);
 }
 
@@ -52,38 +74,101 @@ function drawBoard(board) {
 }
 
 function step(board) {
-  let arr = Array(100);
-  for (let x = 0; x < 100; x++)
-    arr[x] = board[x].slice();
-  for (let x = 0; x < board.length; x++) {
-    for (let y = 0; y < board[x].length; y++) {
-      if (board[x][y] == 1) continue;
-      if (board[x][y] == 3) {
-        if (board[x + generatorFacing[0]][y + generatorFacing[1]] == 0)
-          arr[x + generatorFacing[0]][y + generatorFacing[1]] = generatorType;
-      } else if (board[x][y] == 4) {
-        if (x + duplicatorIn[0] >= 0 && y + duplicatorIn[1] >= 0 && x + duplicatorOut[0] < 100 && y + duplicatorOut[1] < 100)
-          if ((board[x + duplicatorIn[0]][y + duplicatorIn[1]] > 1) && (board[x + duplicatorOut[0]][y + duplicatorOut[1]] == 0)) {
-            arr[x + duplicatorOut[0]][y + duplicatorOut[1]] = board[x + duplicatorIn[0]][y + duplicatorIn[1]];
+    let arr = Array(boardSize);
+    for (let x = 0; x < boardSize; x++)
+        arr[x] = board[x].slice();
+  
+    for (let x = 0; x < board.length; x++) {
+        for (let y = 0; y < board[x].length; y++) {
+
+            // pusher cell
+            if (board[x][y] == 3) {
+                let move = 0;
+                for (; move <= pusherLimit; move++) {
+
+                    // checking if within bounds
+                    if (x + (move + 1)*pusherFacing[0] >= boardSize 
+                    || x + (move + 1)*pusherFacing[0] < 0 
+                    || y + (move + 1)*pusherFacing[1] >= boardSize 
+                    || y + (move + 1)*pusherFacing[1] < 0 
+                    || x + (move - 1)*pusherFacing[0] >= boardSize 
+                    || x + (move - 1)*pusherFacing[0] < 0 
+                    || y + (move - 1)*pusherFacing[1] >= boardSize
+                    || y + (move - 1)*pusherFacing[1] < 0) break;
+
+                    // checking for empty space
+                    if (board[x + (move + 1)*pusherFacing[0]][y + (move + 1)*pusherFacing[1]] == 0
+                     || board[x + (move + 1)*pusherFacing[0]][y + (move + 1)*pusherFacing[1]] == 3
+                     || board[x + (move + 1)*pusherFacing[0]][y + (move + 1)*pusherFacing[1]] == 6) {
+                        move++;
+                        break;
+                    }
+                    
+                    // checking for wall or block push limit
+                    if (board[x + (move + 1)*pusherFacing[0]][y + (move + 1)*pusherFacing[1]] == 1 || move == pusherLimit) {
+                        move = 0;
+                        break;
+                    }
+                }
+                for (let i = 0; i < move; i++) {
+                    if (x + (i + 1)*pusherFacing[0] >= boardSize 
+                    || y + (i + 1)*pusherFacing[1] >= boardSize 
+                    || x + (i - 1)*pusherFacing[0] >= boardSize 
+                    || y + (i - 1)*pusherFacing[1] >= boardSize) break;
+
+                    arr[x + (i + 1)*pusherFacing[0]][y + (i + 1)*pusherFacing[1]] = board[x + i*pusherFacing[0]][y + i*pusherFacing[1]];
+                    arr[x + i*pusherFacing[0]][y + i*pusherFacing[1]] = board[x + (i - 1)*pusherFacing[0]][y + (i - 1)*pusherFacing[1]];
+                }
+                if (move > 0) arr[x][y] = 0;
+            }
+        }
+    }
+    board, arr = checkGoals(board, arr);
+    for (let x = 0; x < boardSize; x++)
+        board[x] = arr[x].slice();
+    for (let x = 0; x < board.length; x++) {
+        for (let y = 0; y < board[x].length; y++) {
+
+            // generator cell
+            if (board[x][y] == 4) {
+                if (board[x + generatorFacing[0]][y + generatorFacing[1]] == 0)
+                    arr[x + generatorFacing[0]][y + generatorFacing[1]] = generatorType;
+
+            // duplicator cell
+            } else if (board[x][y] == 5) {
+                if (x + duplicatorIn[0] >= 0 && y + duplicatorIn[1] >= 0 && x + duplicatorOut[0] < boardSize && y + duplicatorOut[1] < boardSize)
+                    if ((board[x + duplicatorIn[0]][y + duplicatorIn[1]] > 1) && (board[x + duplicatorOut[0]][y + duplicatorOut[1]] == 0))
+                        arr[x + duplicatorOut[0]][y + duplicatorOut[1]] = board[x + duplicatorIn[0]][y + duplicatorIn[1]];
+            }
         }
     }
     return arr;
 }
 
-function mousePressed() {
-    dragging = true;
+function checkGoals(b, a) {
+    for (let x = 0; x < b.length; x++) {
+        for (let y = 0; y < b[x].length; y++) {
+            if (b[x][y] == 6 && a[x][y] > 1) {
+                b[x][y] = 0;
+                a[x][y] = 0;
+            }
+        }
+    }
+    return b, a;
 }
 
-function mouseReleased() {
-    dragging = false;
+function mouseClicked() {
+    mouseDragged();
 }
 
-function mouseMoved() {
-    if (!dragging) return;
+function mouseDragged() {
     if (mouseX < 200) {
-        currCell = int(mouseY / 200);
-        print(currCell);
-    } else if (mouseX <= 1000 && mouseY <= 1000) {
+        if (mouseY < sideBarSize * cols.length) {
+            currCell = int(mouseY / sideBarSize);
+            print(currCell);
+        }
+    } else if (mouseX >= 200 && mouseX <= boardSize*cellSize + 200 && mouseY <= boardSize*cellSize) {
         board[int((mouseX - xOffset) / cellSize)][int((mouseY - yOffset) / cellSize)] = currCell;
     }
+    print(mouseX, mouseY);
 }
