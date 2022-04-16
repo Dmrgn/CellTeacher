@@ -13,5 +13,5 @@ delElm.addEventListener("click", async (e) => {
 
 async function deleteAccount(str) {
     // send register request
-    return sendRequest(window.location.origin + "/users/delete", "GET");
+    return sendRequest(window.location.origin + "/users/delete", "DELETE");
 }
