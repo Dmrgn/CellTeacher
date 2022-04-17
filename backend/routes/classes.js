@@ -5,13 +5,52 @@ const fs = require('fs');
 const router = express.Router();
 const sessions = require('../utils/sessions');
 let users = require("../utils/users");
+let levels = require("../utils/levels");
 let classes = require("../utils/classes");
 
+// join a class with the specified join code
+router.post('/classes/join/:code', function(req, res) {
+    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    if (!isSessionValid.valid)
+        return res.status(401).send("Please login first.");
+    const user = getUser(req.cookies.name);
+    const cs = [];
+    for (const cn in user.classes) {
+        for (const c in classes) {
+            if (classes[c].id == user.classes[cn]) {
+                cs.push(classes[c]);
+            }
+        }
+    }
+    // locate class with specified join code
+    let toJoin = false;
+    for (const c of classes) {
+        if (c.code == req.params.code) {
+            toJoin = c;
+        }
+    }
+    if (toJoin == false)
+        return res.status(404).send("Class not found.");
+    // check to see if user is already in that class
+    let found = false;
+    for (const c of cs) {
+        if (c.id == toJoin.id) {
+            return res.status(404).send("User already in specified class.");
+        }
+    }
+    // add user to specified class
+    user.classes.push(toJoin.id);
+    toJoin.students.push(user.name);
+    fs.writeFileSync(path.join("data/classes.json"), JSON.stringify(classes));
+    fs.writeFileSync(path.join("data/users.json"), JSON.stringify(users));
+    return res.status(200).json(toJoin);
+})
 
+// list all classes the user is in
 router.get('/classes', function (req, res) {
     const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
     if (!isSessionValid.valid)
-    return res.status(401).send("Please login first.");
+        return res.status(401).send("Please login first.");
     const user = getUser(req.cookies.name);
     const cs = [];
     for (const cn in user.classes) {
@@ -27,10 +66,11 @@ router.get('/classes', function (req, res) {
     });
 });
 
+// list data of specified class that the student or teacher is in
 router.get('/classes/:c', function (req, res) {
     const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
     if (!isSessionValid.valid)
-    return res.status(401).send("Please login first.");
+        return res.status(401).send("Please login first.");
     const user = getUser(req.cookies.name);
     let isInClass = false;
     for (let i = 0; i < user.classes.length; i++) {
@@ -50,6 +90,71 @@ router.get('/classes/:c', function (req, res) {
     return res.json(found);
 });
 
+// assign level to class as a teacher
+router.get('/classes/:c/level/:level', function (req, res) {
+    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    if (!isSessionValid.valid)
+        return res.status(401).send("Please login first.");
+    const user = getUser(req.cookies.name);
+    if (user.type == "student")
+        return res.status(402).send("Students don't have access to this!");
+    if (!userInClass(user, req.params.c))
+        return res.status(402).send("You are not part of that class.");
+    let found = getClass(req.params.c);
+    if (!found)
+        return res.status(404).send("Class not found.");
+    // check if specified level exists
+    const level = levels.getLevel(Number(req.params.level));
+    if (!level)
+        return res.status(404).send("Level not found.");
+    // check if level is already assigned
+    let foundLevel = false;
+    for (const l of found.assignments) {
+        if (l.id == level.id) {
+            foundLevel = true;
+        }
+    }
+    if (foundLevel)
+        return res.status(404).send("Level not found.");
+    return res.json(found);
+});
+
+// delete student from class as a teacher
+router.delete('/classes/:c/student/:username', function(req, res) {
+    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    if (!isSessionValid.valid)
+        return res.status(401).send("Please login first.");
+    const user = getUser(req.cookies.name);
+    if (user.type == "student")
+        return res.status(402).send("Students don't have access to this!");
+    if (!userInClass(user, req.params.c))
+        return res.status(402).send("You are not part of that class.");
+    let found = getClass(req.params.c);
+    if (!found)
+        return res.status(404).send("Class not found.");
+    // check if student to be deleted is in the class
+    let studentFound = false;
+    for (const s of found.students) {
+        if (s == req.params.username) {
+            studentFound = s;
+        }
+    }
+    if (studentFound === false)
+        return res.status(404).send("Student not found.");
+    // remove class from student
+    const student = getUser(studentFound);
+    if (!student)
+        return res.status(404).send("Student not found.");
+    if (student.classes.indexOf(Number(req.params.c)) >= 0)
+        student.classes = student.classes.splice(student.classes.indexOf(req.params.c), 1);
+    if (found.students.indexOf(req.params.username) >= 0)
+        found.students = found.students.splice(found.students.indexOf(req.params.username), 1);
+    fs.writeFileSync(path.join("data/classes.json"), JSON.stringify(classes));
+    fs.writeFileSync(path.join("data/users.json"), JSON.stringify(users));
+    return res.status(200).send("Student removed.");
+});
+
+// create a class as a teacher
 router.post('/classes/create', function (req, res) {
     const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
     if (!isSessionValid.valid)
@@ -88,6 +193,7 @@ router.post('/classes/create', function (req, res) {
     return res.status(200).json(classes[classes.length - 1]);
 });
 
+// delete a class as a teacher
 router.delete('/classes/delete', function (req, res) {
     const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
     if (!isSessionValid.valid)
@@ -111,7 +217,6 @@ router.delete('/classes/delete', function (req, res) {
             if (index != false) break;
         }
     }
-    console.log(index);
     if (index === false)
         return res.status(400).send("You don't have permission to delete that class.");
     for (const s of classes[index].students) {
@@ -132,14 +237,30 @@ router.delete('/classes/delete', function (req, res) {
             }
         }
     }
-    console.log(index);
-    console.log(classes.splice(index, 1));
     classes = classes.splice(index, 1);
-    console.log(classes);
     fs.writeFileSync(path.join("data/classes.json"), JSON.stringify(classes));
     fs.writeFileSync(path.join("data/users.json"), JSON.stringify(users));
     return res.status(200).send("Class deleted.");
 });
+
+function userInClass(user, classId) {
+    let isInClass = false;
+    for (let i = 0; i < user.classes.length; i++) {
+        if (user.classes[i] == classId)
+            isInClass = true;
+    }
+    return isInClass;
+}
+
+function getClass(classId) {
+    let found = false;
+    for (const c of classes) {
+        if (c.id == classId) {
+            found = c;
+        }
+    }
+    return found;
+}
 
 function pad(num, size) {
     num = num.toString();

@@ -1,1 +1,18 @@
-[]
+[{
+    "id": 0,
+    "name": "Class One",
+    "code": "AAAAAAAA",
+    "students": ["Student"],
+    "teachers": ["Daniel"],
+    "assignments": [{
+        "id": 0,
+        "due": 1650166816064
+    }]
+}, {
+    "id": 1,
+    "name": "Class Two",
+    "code": "AAAAAAAB",
+    "students": ["Student"],
+    "teachers": ["Daniel"],
+    "assignments": []
+}]
