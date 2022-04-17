@@ -33,7 +33,7 @@
     },
     {
         "id":2,
-        "name":"Level Three",
+        "name":"Sandbox",
         "difficulty":3,
         "boardSize":15,
         "board":[
