@@ -79,21 +79,21 @@ function setup() {
 }
 
 function levelSetup(lev) {
-    boardSize = levels[lev][0];
+    levelData = await sendRequest(("https://cellteacher.herokuapp.com/levels/" + String(lev)), "GET");
+
+    boardSize = levelData.boardSize;
     cellSize = Math.round(Math.min(htmlElm.clientHeight, htmlElm.clientWidth)/boardSize);
     sideBarSize = 200;
     sideBarHeight = 60;
-    buildArea = levels[lev][2];
+    buildArea = levelData.buildArea;
 
     moveCamera(width/2-200-cellSize*boardSize/2, height/2-cellSize*boardSize/2);
 
-    levelData = await sendRequest("https://cellteacher.herokuapp.com/levels/" + lev, "GET");
     types = ["Blank", "Wall", "Moveable", "Pusher", "Generator", "Duplicator", "Goal"];
 
     // board = Array(boardSize);
     // for (let x = 0; x < boardSize; x++)
     //     board[x] = levels[lev][3].slice();
-
 
     cols = [color(223), color(0), color(165, 114, 63), color(255, 255, 0), color(0, 255, 255), color(255, 0, 255), color(0, 255, 0)];
     xOffset = 200;
