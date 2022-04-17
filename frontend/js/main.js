@@ -34,7 +34,7 @@ function setup() {
         board[x] = Array(boardSize).fill(0);
 
     cols = [color(223), color(0), color(165, 114, 63), color(255, 255, 0), color(0, 255, 255), color(255, 0, 255), color(0, 255, 0)];
-    types = ["Blank", "Wall", "", "Pusher", "Generator", "Duplicator"];
+    types = ["Blank", "Wall", "Moveable", "Pusher", "Generator", "Duplicator", "Goal"];
     xOffset = 200;
     yOffset = 0;
     currCell = 1;
