@@ -7,7 +7,18 @@ const capElm = document.querySelector("#captcha");
 const compElm = document.querySelector("#complainer");
 const teachElm = document.querySelector("#typeTeacher");
 const studElm = document.querySelector("#typeStudent");
+const captchaElm = document.querySelector("#captchaImg");
 
+// id of the generated captcha
+let captchaId = null;
+
+// get a captcha when the page loads
+getCaptcha().then(data => {
+    data.json().then(json => {
+        captchaElm.innerHTML = json.captcha;
+        captchaId = json.captchaId;
+    })
+});
 
 butElm.addEventListener("click", async (e) => {
     if (pass1Elm.value != pass2Elm.value)
@@ -16,16 +27,17 @@ butElm.addEventListener("click", async (e) => {
         return compElm.innerText = "Please specify and account type.";
     const registerAttempt = await register(userElm.value, pass1Elm.value);
     if ((registerAttempt.status+'').charAt(0) == '2')
-        return window.location = window.location.origin + "/users/login";
+        return window.location = window.location.origin + "/registration/worked/this/should/be/a/login/page";
     if (registerAttempt.status === 422)
-        return window.location = window.location.origin + "/error?message=Captcha failed, please enter the correct Captcha Code.";
+        return window.location = window.location.origin + "/registration/failed/this/should/be/a/retry/page";
+    // console.log(await registerAttempt.text())
     compElm.innerText = await registerAttempt.text();
 })
 
 // register with the current credentials as the input
 async function register(name, password) {
     // send register request
-    return sendRequest(window.location.origin + "/users/register", "POST", {
+    return sendRequest("https://cellteacher.herokuapp.com/users/register", "POST", {
         name: name,
         password: password,
         captcha: {
