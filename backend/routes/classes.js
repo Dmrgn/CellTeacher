@@ -10,10 +10,10 @@ let classes = require("../utils/classes");
 
 // join a class with the specified join code
 router.post('/classes/join/:code', function(req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     const cs = [];
     for (const cn in user.classes) {
         for (const c in classes) {
@@ -47,11 +47,11 @@ router.post('/classes/join/:code', function(req, res) {
 })
 
 // list all classes the user is in
-router.get('/classes', function (req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+router.post('/classes', function (req, res) {
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     const cs = [];
     for (const cn in user.classes) {
         for (const c in classes) {
@@ -67,11 +67,11 @@ router.get('/classes', function (req, res) {
 });
 
 // list data of specified class that the student or teacher is in
-router.get('/classes/:c', function (req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+router.post('/classes/:c', function (req, res) {
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     let isInClass = false;
     for (let i = 0; i < user.classes.length; i++) {
         if (user.classes[i] ==req.params.c)
@@ -92,10 +92,10 @@ router.get('/classes/:c', function (req, res) {
 
 // assign level to class as a teacher
 router.post('/classes/:c/levels/:level', function (req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     if (user.type == "student")
         return res.status(402).send("Students don't have access to this!");
     if (!userInClass(user, req.params.c))
@@ -130,10 +130,10 @@ router.post('/classes/:c/levels/:level', function (req, res) {
 
 // submit level as a student
 router.put('/classes/:c/levels/:level', function (req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     if (user.type == "teacher")
         return res.status(402).send("Teacher's can't submit assignments.");
     if (!userInClass(user, req.params.c))
@@ -164,10 +164,10 @@ router.put('/classes/:c/levels/:level', function (req, res) {
 
 // delete student from class as a teacher
 router.delete('/classes/:c/student/:username', function(req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     if (user.type == "student")
         return res.status(402).send("Students don't have access to this!");
     if (!userInClass(user, req.params.c))
@@ -199,13 +199,13 @@ router.delete('/classes/:c/student/:username', function(req, res) {
 
 // create a class as a teacher
 router.post('/classes/create', function (req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     if (user.type == "student")
         return res.status(402).send("Students cannot create classes.");
-    if (!req.body.name)
+    if (!req.body.newName)
         return res.status(400).send("Please specify a class name.");
     let code = "";
     const chars = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y","Z","1", "2", "3", "4", "5", "6","7", "8", "9", "0"];
@@ -225,10 +225,10 @@ router.post('/classes/create', function (req, res) {
     }
     classes.push({
         id:classes.length > 0 ? classes[classes.length - 1].id+1 : 0,
-        name:req.body.name,
+        name:req.body.newName,
         code:code,
         students:[],
-        teachers:[req.cookies.name],
+        teachers:[req.body.name],
         assignments:[]
     });
     fs.writeFileSync(path.join("data/classes.json"), JSON.stringify(classes));
@@ -238,10 +238,10 @@ router.post('/classes/create', function (req, res) {
 
 // delete a class as a teacher
 router.delete('/classes/delete', function (req, res) {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
-    const user = getUser(req.cookies.name);
+    const user = getUser(req.body.name);
     if (user.type == "student")
         return res.status(402).send("Students cannot delete classes.");
     if (req.body.id && req.body.id != 0)

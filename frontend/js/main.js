@@ -34,6 +34,7 @@ function setup() {
         board[x] = Array(boardSize).fill(0);
 
     cols = [color(223), color(0), color(165, 114, 63), color(255, 255, 0), color(0, 255, 255), color(255, 0, 255), color(0, 255, 0)];
+    types = ["Blank", "Wall", "Moveable", "Pusher", "Generator", "Duplicator", "Goal"];
     xOffset = 200;
     yOffset = 0;
     currCell = 1;
@@ -198,18 +199,20 @@ function checkGoals(b, a) {
 }
 
 function mouseClicked() {
+    mouseDragged();
+}
 
 function mouseDragged() {
     dragged = true;
+
     const mouseTileX = Math.floor((mouseX - cameraPos.x)/zoom);
     const mouseTileY = Math.floor((mouseY - cameraPos.y)/zoom);
     if (mouseButton === LEFT) {
         if (mouseX < 200) {
             if (mouseY < sideBarSize * cols.length) {
-                currCell = int(mouseY /
-    mouseDragged();
-} sideBarSize);
+                currCell = int(mouseY / sideBarSize);
                 print(currCell);
+                updateUI();
             }
         } else if (mouseTileX >= 200 && mouseTileX <= boardSize*cellSize + 200 && mouseTileY <= boardSize*cellSize) {
             board[int((mouseTileX - xOffset) / cellSize)][int((mouseTileY - yOffset) / cellSize)] = currCell;

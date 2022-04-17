@@ -28,7 +28,8 @@ butElm.addEventListener("click", async (e) => {
         return compElm.innerText = "Please specify and account type.";
     const registerAttempt = await register(userElm.value, pass1Elm.value);
     if ((registerAttempt.status+'').charAt(0) == '2')
-        return window.location = window.location.origin + "/registration/worked/this/should/be/a/login/page";
+        //return window.location = window.location.origin + "/registration/worked/this/should/be/a/login/page";
+        return window.open("login.html");
     if (registerAttempt.status === 422)
         return window.location = window.location.origin + "/registration/failed/this/should/be/a/retry/page";
     compElm.innerText = await registerAttempt.text();

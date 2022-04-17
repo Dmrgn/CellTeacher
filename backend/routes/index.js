@@ -10,9 +10,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/index', (req, res) => {
-    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    const isSessionValid = sessions.validate(req.body.name, req.body.token);
     if (isSessionValid.valid) {
-        res.status(200).render('index', {name:req.cookies.name});
+        res.status(200).render('index', {name:req.body.name});
     } else {
         res.status(200).render('index', {name:"User"});
     }

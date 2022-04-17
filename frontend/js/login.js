@@ -21,7 +21,9 @@ getCaptcha().then(data => {
 butElm.addEventListener("click", async (e) => {
     const loginAttempt = await login(userElm.value, passElm.value);
     if ((loginAttempt.status+'').charAt(0) == '2')
-        return window.location = "https://cellteacher.herokuapp.com/users/index";
+        //return window.location = "https://cellteacher.herokuapp.com/users/index";
+        //return window.location = window.location.origin + "/teacherpanel.html";
+        return window.open("teacherpanel.html");
     if (loginAttempt.status === 422)
         return window.location = window.location.origin + "/error?message=Captcha failed, please enter the correct Captcha Code.";
     compElm.innerText = await loginAttempt.text();
