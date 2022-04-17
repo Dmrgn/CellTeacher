@@ -86,6 +86,7 @@ function levelSetup(lev) {
     sideBarSize = 200;
     sideBarHeight = 60;
     buildArea = levelData.buildArea;
+    board = levelData.board;
 
     moveCamera(width/2-200-cellSize*boardSize/2, height/2-cellSize*boardSize/2);
 
