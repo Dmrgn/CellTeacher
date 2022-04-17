@@ -79,7 +79,7 @@ function setup() {
 }
 
 function levelSetup(lev) {
-    levelData = await sendRequest(("https://cellteacher.herokuapp.com/levels/" + String(lev)), "GET");
+    // levelData = await sendRequest(("https://cellteacher.herokuapp.com/levels/" + String(lev)), "GET");
 
     boardSize = levelData.boardSize;
     cellSize = Math.round(Math.min(htmlElm.clientHeight, htmlElm.clientWidth)/boardSize);
@@ -195,11 +195,9 @@ function step(board) {
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
             if (board[i][j] == 1) {
-                console.log(board[i][j]);
                 try {
                     eval(scripts[board[i][j]]);
                 } catch (error) {}
-                console.log(board[i][j]);
             }
         }
     }

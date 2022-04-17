@@ -20,14 +20,38 @@ scriptElm.addEventListener("focus", function() {
 });
 
 function updateUI() {
-    
+
     scriptElm.innerText = scripts[currCell];
 
     scriptNameElm.innerText = types[currCell];
     console.log(`color: rgb(${red(cols[currCell])},${green(cols[currCell])},${blue(cols[currCell])});`);
     scriptNameElm.style = `color: rgb(${red(cols[currCell])},${green(cols[currCell])},${blue(cols[currCell])}); text-shadow: 2px 2px 10px #ffffff;`;
     console.log(scriptNameElm.style.color);
-    descElm.innerText = "This is a cool cell.";
+    switch (currCell) {
+        case 0:
+            descElm.innerText = "This is an empty cell.";
+            break;
+        case 1:
+            descElm.innerText = "This cell blocks other cells";
+            break;
+        case 2:
+            descElm.innerText = "Moveable block that has no function. Perfect for creating your own.";
+            break;
+        case 3:
+            descElm.innerText = "Pushes blocks in front of it.";
+            break;
+        case 4:
+            descElm.innerText = "Generates a new cell in front of it.";
+            break;
+        case 5:
+            descElm.innerText = "Duplicates the cell behind it.";
+            break;
+        case 5:
+            descElm.innerText = "The goal is to remove all of these cells :D.";
+            break;
+        default:
+            break;
+    }
 }
 
 // function isWhiteSpace(char) {
