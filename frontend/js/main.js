@@ -62,6 +62,9 @@ function keyTyped() {
 
 function draw() {
     background("white");
+
+    scriptElm.value = scripts[currCell] ?? "" ;
+    console.log(scripts[currCell]);
     
     startCamera();
 
@@ -96,7 +99,7 @@ function drawBoard(board) {
     }
 }
 
-function move(board, arr, x, y, dir) {
+function moveCell(board, arr, x, y, dir) {
     if (x + dir[0] == 0 || x + dir[0] == 6
      || y + dir[0] == 0 || y + dir[0] == 6)
         arr[x + dir[0]][y + dir[1]] = board[x][y];
@@ -167,13 +170,13 @@ function step(board) {
                 for (let i = 0; i < move - adj; i++) {
                     if (x + (i + 1)*pusherFacing[0] >= boardSize 
                     || y + (i + 1)*pusherFacing[1] >= boardSize) break;
-                    board, arr = move(board, arr, x, y, pusherFacing);
+                    board, arr = moveCell(board, arr, x, y, pusherFacing);
                     // arr[x + (i + 1)*pusherFacing[0]][y + (i + 1)*pusherFacing[1]] = board[x + i*pusherFacing[0]][y + i*pusherFacing[1]];
                     if (x + (i - 1)*pusherFacing[0] < 0
                      || x + (i + 1)*pusherFacing[0] >= boardSize
                      || y + (i - 1)*pusherFacing[1] < 0
                      || y + (i + 1)*pusherFacing[1] >= boardSize)
-                        board, arr = move(board, arr, x - pusherFacing[0], y - pusherFacing[1], [-pusherFacing[0], -pusherFacing[1]]);
+                        board, arr = moveCell(board, arr, x - pusherFacing[0], y - pusherFacing[1], [-pusherFacing[0], -pusherFacing[1]]);
                     // arr[x + i*pusherFacing[0]][y + i*pusherFacing[1]] = x + (i - 1)*pusherFacing[0] < 0 || x + (i + 1)*pusherFacing[0] >= boardSize || y + (i - 1)*pusherFacing[1] < 0 || y + (i + 1)*pusherFacing[1] >= boardSize ? 0 : board[x + (i - 1)*pusherFacing[0]][y + (i - 1)*pusherFacing[1]];
                 }
                 if (move - adj > 0) arr[x][y] = 0;

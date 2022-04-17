@@ -20,7 +20,9 @@ scriptElm.addEventListener("focus", function() {
 });
 
 function updateUI() {
+    
     scriptElm.innerText = scripts[currCell];
+
     scriptNameElm.innerText = types[currCell];
     console.log(`color: rgb(${red(cols[currCell])},${green(cols[currCell])},${blue(cols[currCell])});`);
     scriptNameElm.style = `color: rgb(${red(cols[currCell])},${green(cols[currCell])},${blue(cols[currCell])}); text-shadow: 2px 2px 10px #ffffff;`;
