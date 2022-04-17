@@ -25,6 +25,8 @@ function setup() {
     canvas.style = "display: flex;";
     drawingContext.imageSmoothingEnabled = false;
 
+    moveCamera(width/2-200-cellSize*boardSize/2, height/2-cellSize*boardSize/2);
+
     board = Array(boardSize);
     for (let x = 0; x < boardSize; x++)
         board[x] = Array(boardSize).fill(0);
