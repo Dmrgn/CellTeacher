@@ -26,6 +26,20 @@ function setup() {
     createCanvas(htmlElm.clientWidth/3*2, htmlElm.clientHeight);
     canvas.style = "display: flex;";
     drawingContext.imageSmoothingEnabled = false;
+<<<<<<< HEAD
+=======
+}
+
+function levelSetup(lev) {
+    // levelData = await sendRequest(("https://cellteacher.herokuapp.com/levels/" + String(lev)), "GET");
+
+    boardSize = levelData.boardSize;
+    cellSize = Math.round(Math.min(htmlElm.clientHeight, htmlElm.clientWidth)/boardSize);
+    sideBarSize = 200;
+    sideBarHeight = 60;
+    buildArea = levelData.buildArea;
+    board = levelData.board;
+>>>>>>> 90f6091e177ab5ca54e9e651bf952f5fa18e9aa8
 
     moveCamera(width/2-200-cellSize*boardSize/2, height/2-cellSize*boardSize/2);
 
