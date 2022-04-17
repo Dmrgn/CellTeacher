@@ -22,8 +22,8 @@ function setup() {
 
     const htmlElm = document.querySelector("html");
     const mainElm = document.querySelector("main");
-    mainElm.classList.add("is-flex-grow-2");
-    createCanvas(htmlElm.clientWidth/2, htmlElm.clientHeight);
+    mainElm.classList.add("is-flex-grow-3");
+    createCanvas(htmlElm.clientWidth/3*2, htmlElm.clientHeight);
     canvas.style = "display: flex;";
     drawingContext.imageSmoothingEnabled = false;
 
@@ -71,6 +71,13 @@ function draw() {
     for (let x = 0; x < cols.length; x++) {
         fill(cols[x]);
         rect(0, sideBarSize * x, 200, sideBarSize);
+    }
+    // outline around current cell
+    if (currCell >= 0) {
+        noFill();
+        strokeWeight(10);
+        rect(-5, sideBarSize * currCell -5, 210, sideBarSize+10);
+        strokeWeight(1);
     }
     fill(play ? color(0, 255, 0) : color(255, 0, 0));
     rect(75, 500, 50, 50);
