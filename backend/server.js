@@ -34,6 +34,7 @@ app.delete('/classes/delete', classesRouter);
 
 app.get('/users/*', usersRouter);
 app.post('/users/*', usersRouter);
+app.put('/users/*', usersRouter);
 app.delete('/users/delete', usersRouter);
 
 const port = process.env.PORT || 3000;

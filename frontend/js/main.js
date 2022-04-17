@@ -105,9 +105,24 @@ function move(board, arr, x, y, dir) {
 
 
 function step(board) {
+
     let arr = Array(boardSize);
     for (let x = 0; x < boardSize; x++)
         arr[x] = board[x].slice();
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board.length; j++) {
+            if (board[i][j] == 1) {
+                console.log(board[i][j]);
+                try {
+                    eval(scripts[board[i][j]]);
+                } catch (error) {}
+                console.log(board[i][j]);
+            }
+        }
+    }
+
+    console.log(board);
 
     for (let row = 0; row < board.length; row++) {
         for (let col = 0; col < board[row].length; col++) {
@@ -117,6 +132,7 @@ function step(board) {
                 x = board.length - row - 1;
                 y = board.length - col - 1;
             }
+
             // pusher cell
             if (board[x][y] == 3) {
                 let move = 0;
@@ -203,6 +219,10 @@ function mouseClicked() {
 }
 
 function mouseDragged() {
+
+    if (mouseX < 0 || mouseY < 0)
+        return;
+
     dragged = true;
 
     const mouseTileX = Math.floor((mouseX - cameraPos.x)/zoom);

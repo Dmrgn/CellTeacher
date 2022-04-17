@@ -1,0 +1,9 @@
+if rightCell == leftCell start
+    do moveUp
+end
+
+if rightCell == pusher start
+    do moveLeft
+else 
+    do moveDown
+end

@@ -32,5 +32,5 @@ async function sendRequest(url, method, data) {
 }
 
 async function getCaptcha() {
-    return await sendRequest("https://cellteacher.herokuapp.com/users/register", "GET");
+    return await sendRequest("https://cellteacher.herokuapp.com/users/register", "PUT");
 }
