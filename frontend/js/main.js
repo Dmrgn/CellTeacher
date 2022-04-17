@@ -207,9 +207,9 @@ function mouseDragged() {
     if (mouseButton === LEFT) {
         if (mouseX < 200) {
             if (mouseY < sideBarSize * cols.length) {
-                currCell = int(mouseY /
-    mouseDragged();
-} sideBarSize);
+                currCell = int(mouseY / sideBarSize);
+                mouseDragged();
+            } 
                 print(currCell);
                 updateUI();
             }
