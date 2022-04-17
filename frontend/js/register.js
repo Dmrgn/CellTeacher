@@ -31,7 +31,6 @@ butElm.addEventListener("click", async (e) => {
         return window.location = window.location.origin + "/registration/worked/this/should/be/a/login/page";
     if (registerAttempt.status === 422)
         return window.location = window.location.origin + "/registration/failed/this/should/be/a/retry/page";
-    // console.log(await registerAttempt.text())
     compElm.innerText = await registerAttempt.text();
 })
 

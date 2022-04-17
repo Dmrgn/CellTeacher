@@ -91,7 +91,7 @@ router.get('/classes/:c', function (req, res) {
 });
 
 // assign level to class as a teacher
-router.get('/classes/:c/level/:level', function (req, res) {
+router.post('/classes/:c/levels/:level', function (req, res) {
     const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
     if (!isSessionValid.valid)
         return res.status(401).send("Please login first.");
@@ -115,7 +115,50 @@ router.get('/classes/:c/level/:level', function (req, res) {
         }
     }
     if (foundLevel)
+        return res.status(404).send("Level already assigned.");
+    // check if due date provided
+    if (!req.body.due || isNaN(Number(req.body.due)))
+        return res.status(400).send("Please attach a due date.");
+    found.assignments.push({
+        "id":Number(level.id),
+        "due":Number(req.body.due),
+        "finished":[]
+    });
+    fs.writeFileSync(path.join("data/classes.json"), JSON.stringify(classes));
+    return res.json(found);
+});
+
+// submit level as a student
+router.put('/classes/:c/levels/:level', function (req, res) {
+    const isSessionValid = sessions.validate(req.cookies.name, req.cookies.token);
+    if (!isSessionValid.valid)
+        return res.status(401).send("Please login first.");
+    const user = getUser(req.cookies.name);
+    if (user.type == "teacher")
+        return res.status(402).send("Teacher's can't submit assignments.");
+    if (!userInClass(user, req.params.c))
+        return res.status(402).send("You are not part of that class.");
+    let found = getClass(req.params.c);
+    if (!found)
+        return res.status(404).send("Class not found.");
+    // check if specified level exists
+    const level = levels.getLevel(Number(req.params.level));
+    if (!level)
         return res.status(404).send("Level not found.");
+    // check if level is assigned
+    let foundLevel = false;
+    for (const l in found.assignments) {
+        if (found.assignments[l].id == level.id) {
+            foundLevel = l;
+        }
+    }
+    if (foundLevel === false)
+        return res.status(400).send("Level not assigned");
+    // check if user already completed assignment
+    if (found.assignments[foundLevel].finished.indexOf(user.name) >= 0)
+        return res.status(400).send("Already submitted that assignment.");
+    found.assignments[foundLevel].finished.push(user.name);
+    fs.writeFileSync(path.join("data/classes.json"), JSON.stringify(classes));
     return res.json(found);
 });
 

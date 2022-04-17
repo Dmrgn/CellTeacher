@@ -24,9 +24,10 @@ app.use('/users', express.static('public'));
 
 app.get('/', indexRouter);
 app.get('/index', indexRouter);
-app.get('/error', errorRouter);
+app.get('/levels/*', indexRouter);
 
 app.get('/classes', classesRouter);
+app.put('/classes/*', classesRouter);
 app.get('/classes/*', classesRouter);
 app.post('/classes/*', classesRouter);
 app.delete('/classes/delete', classesRouter);
