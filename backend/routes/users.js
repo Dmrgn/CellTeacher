@@ -13,14 +13,14 @@ router.post('/users/login', async (req, res) => {
     if (!captcha.valid) {
         return res.status(422).send("Captcha Failed");
     }
-    const user = users.find(user => user.name === req.body.newName);
+    const user = users.find(user => user.name === req.body.name);
     if (user == null) {
         return res.status(402).send("Could Not Find User");
     }
     try {
         if (await bcrypt.compare(req.body.password, user.password)) {
             const session = sessions.createSession(req.body.newName);
-            return res.status(200).json({name: session.name, token: session.token});
+            return res.status(200).json(session);
         }
         return res.status(403).send("Password Mismatch");
     } catch (err) {
