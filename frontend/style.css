@@ -5,8 +5,7 @@
 
 body{
     min-height: 100vh;
-    /*background: #1f2430;*/
-    background: white;
+    background: #1f2430;
     display: flex;
     justify-content: center;
     align-items: center;
