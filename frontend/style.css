@@ -1,0 +1,143 @@
+@font-face {
+    font-family: 'Inter';
+    src: url(Inter.ttf);
+}
+
+body{
+    min-height: 100vh;
+    /*background: #1f2430;*/
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container{
+    /*background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.8));*/
+    background-color: #8A9199;
+    border-radius: 10px;
+    box-shadow: (15px 30px rgba(0, 0, 0, 0.3));
+    padding: 30px 40px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-container.item1{
+    width: 40%;
+    min-width: 450px;
+}
+
+.form-container.item2{
+    width: 15%;
+    min-width: 250px;
+}
+
+.button-container{
+    display: flex;
+    align-self: stretch;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 10px;
+}
+
+.input-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+h2{
+    position: absolute;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+}
+
+h3{
+    font-weight: normal;
+    font-size: 18px;
+    font-family: 'Inter';
+    margin: 2px;
+}
+
+h3.lower{
+    margin-bottom: 15px;
+}
+
+button, a.button, input[type=button]{
+    width: 35%;
+    height: 40px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: #DFDFDF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: gray;
+    font-family: 'Inter';
+    cursor: pointer;
+}
+
+a.link{
+    height: 20px;
+    margin: 5px 0 0 0;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: 'Inter';
+    color: #CCCAC2;
+}
+
+input[type=text]{
+    margin: 5px;
+    padding: 10px;
+    border: 0;
+    border-radius: 8px;
+    width: 90%;
+    height: 18px;
+    outline: none;
+    background-color: #C4C4C4;
+    color: black;
+    font-family: 'Inter';
+    font-size: 14px;
+}
+
+::placeholder{
+    font-family: 'Inter';
+    color: gray;
+}
+
+label{
+    font-size: 14px;
+    font-family: 'Inter';
+}
+
+.top{
+    width: 317px;
+    height: 73px;
+    left: 111px;
+    top: 204px;
+    background-color: #8A9199;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.bottom{
+    width: 317px;
+    height: 159px;
+    left: 111px;
+    top: 277px;
+    background-color: #DFDFDF;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.logo{
+    position: fixed;
+    top: 0;
+    left: 0;
+}
