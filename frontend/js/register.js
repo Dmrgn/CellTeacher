@@ -13,6 +13,7 @@ const captchaElm = document.querySelector("#captchaImg");
 let captchaId = null;
 
 // get a captcha when the page loads
+// getCaptcha was moved to utils.js
 getCaptcha().then(data => {
     data.json().then(json => {
         captchaElm.innerHTML = json.captcha;
