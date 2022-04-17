@@ -21,7 +21,9 @@ function setup() {
     initCamera();
 
     const htmlElm = document.querySelector("html");
-    createCanvas(htmlElm.clientWidth, htmlElm.clientHeight);
+    const mainElm = document.querySelector("main");
+    mainElm.classList.add("is-flex-grow-2");
+    createCanvas(htmlElm.clientWidth/2, htmlElm.clientHeight);
     canvas.style = "display: flex;";
     drawingContext.imageSmoothingEnabled = false;
 
@@ -52,7 +54,7 @@ function setup() {
 }
 
 function keyTyped() {
-    if (key === ' ') {
+    if (key === ' ' && !scriptFocused) {
         play = !play;
     }
 }

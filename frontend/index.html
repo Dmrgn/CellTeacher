@@ -5,13 +5,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cell Teacher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" integrity="sha512-IgmDkwzs96t4SrChW29No3NXBIBv8baW490zk5aXvhCD8vuZM3yUSkbyTBcXohkySecyzIrUwiF/qV0cuPcL3Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=New+Rocker&display=swap" rel="stylesheet">
     <!-- import p5js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.js" integrity="sha512-4P0ZJ49OMXe3jXT+EsEaq82eNwFeyYL81LeHGzGcEhowFbTqeQ80q+NEkgsE8tHPs6aCqvi7U+XWliAjDmT5Lg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- main scripts go here -->
     <script defer src="js/camera.js"></script>
+    <script defer src="js/script.js"></script>
     <script defer src="js/main.js"></script>
 </head>
-<body style = "margin:0px">
+<body class="is-flex is-justify-content-space-evenly is-align-content-stretch">
+    <div class="has-background-black is-flex-grow-1">
+        <textarea style="font-family: 'Roboto Mono', monospace ;" class="textarea" name="script" id="script" cols="30" rows="40" spellcheck="false" autocorrect="off" autocomplete="off"></textarea>
+    </div>
 </body>
 </html>
