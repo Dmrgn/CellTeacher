@@ -11,12 +11,62 @@ let generatorFacing, generatorType;
 let duplicatorIn, duplicatorOut;
 let dirUp, dirLeft, dirDown, dirRight;
 
+var levels = [
+    [
+        7, // board size
+        100, // cell size
+        [0, 1, 2, 6], // buildArea
+        [
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 6, 6, 6, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1]
+        ]
+    ],
+    [
+        7, // board size
+        100, // cell size
+        [0, 0, 2, 2], // buildArea
+        [
+            [0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 0, 6, 6, 1],
+            [0, 0, 0, 0, 6, 6, 1],
+            [1, 1, 1, 1, 1, 1, 1]
+        ]
+    ],
+    [
+        15, // board size
+        50, // cell size
+        [0, 0, 15, 15], // buildArea
+        [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ]
+    ],
+]
+
 function setup() {
     frameRate(30);
-
-    boardSize = 60;
-    cellSize = 15;
-    sideBarSize = 60;
 
     initCamera();
 
@@ -26,15 +76,26 @@ function setup() {
     createCanvas(htmlElm.clientWidth/3*2, htmlElm.clientHeight);
     canvas.style = "display: flex;";
     drawingContext.imageSmoothingEnabled = false;
+}
+
+function levelSetup(lev) {
+    levelData = await sendRequest(("https://cellteacher.herokuapp.com/levels/" + String(lev)), "GET");
+
+    boardSize = levelData.boardSize;
+    cellSize = Math.round(Math.min(htmlElm.clientHeight, htmlElm.clientWidth)/boardSize);
+    sideBarSize = 200;
+    sideBarHeight = 60;
+    buildArea = levelData.buildArea;
 
     moveCamera(width/2-200-cellSize*boardSize/2, height/2-cellSize*boardSize/2);
 
-    board = Array(boardSize);
-    for (let x = 0; x < boardSize; x++)
-        board[x] = Array(boardSize).fill(0);
+    types = ["Blank", "Wall", "Moveable", "Pusher", "Generator", "Duplicator", "Goal"];
+
+    // board = Array(boardSize);
+    // for (let x = 0; x < boardSize; x++)
+    //     board[x] = levels[lev][3].slice();
 
     cols = [color(223), color(0), color(165, 114, 63), color(255, 255, 0), color(0, 255, 255), color(255, 0, 255), color(0, 255, 0)];
-    types = ["Blank", "Wall", "Moveable", "Pusher", "Generator", "Duplicator", "Goal"];
     xOffset = 200;
     yOffset = 0;
     currCell = 1;
@@ -88,6 +149,24 @@ function draw() {
     if (play && frameCount%6 === 0) {
         board = step(board);
     }
+    if (levelComplete(board) && currLevel < levels.length) {
+        levelSetup(++currLevel);
+    }
+    noFill();
+    stroke(127);
+    strokeWeight(10);
+    rect(sideBarSize + buildArea[0]*cellSize, buildArea[1]*cellSize, (buildArea[2]-buildArea[0])*cellSize, (buildArea[3]-buildArea[1])*cellSize);
+    stroke(0);
+    strokeWeight(2);
+}
+
+function levelComplete(board) {
+    for (let x = 0; x < board.length; x++) {
+        for (let y = 0; y < board[x].length; y++) {
+            if (board[x][y] == 6) return false;
+        }
+    }
+    return true;
 }
 
 function drawBoard(board) {
@@ -227,17 +306,14 @@ function mouseDragged() {
         return;
 
     dragged = true;
-
     const mouseTileX = Math.floor((mouseX - cameraPos.x)/zoom);
     const mouseTileY = Math.floor((mouseY - cameraPos.y)/zoom);
     if (mouseButton === LEFT) {
-        if (mouseX < 200) {
-            if (mouseY < sideBarSize * cols.length) {
-                currCell = int(mouseY / sideBarSize);
-                print(currCell);
-                updateUI();
+        if (mouseX < sideBarSize) {
+            if (mouseY < sideBarHeight * cols.length) {
+                currCell = int(mouseY / sideBarHeight);
             }
-        } else if (mouseTileX >= 200 && mouseTileX <= boardSize*cellSize + 200 && mouseTileY <= boardSize*cellSize) {
+        } else if (mouseTileX >= Math.floor(sideBarSize/boardSize) && mouseTileX <= boardSize*cellSize + sideBarSize && mouseTileY <= boardSize*cellSize) {
             board[int((mouseTileX - xOffset) / cellSize)][int((mouseTileY - yOffset) / cellSize)] = currCell;
         }
     }
