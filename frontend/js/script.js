@@ -7,3 +7,4 @@ scriptElm.addEventListener("blur", function() {
 scriptElm.addEventListener("focus", function() {
     scriptFocused = true;
 });
+
