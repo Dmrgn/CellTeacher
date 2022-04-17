@@ -199,17 +199,18 @@ function checkGoals(b, a) {
 }
 
 function mouseClicked() {
+    mouseDragged();
+}
 
 function mouseDragged() {
     dragged = true;
+
     const mouseTileX = Math.floor((mouseX - cameraPos.x)/zoom);
     const mouseTileY = Math.floor((mouseY - cameraPos.y)/zoom);
     if (mouseButton === LEFT) {
         if (mouseX < 200) {
             if (mouseY < sideBarSize * cols.length) {
                 currCell = int(mouseY / sideBarSize);
-                mouseDragged();
-            } 
                 print(currCell);
                 updateUI();
             }
