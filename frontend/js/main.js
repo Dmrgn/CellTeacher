@@ -12,13 +12,18 @@ let duplicatorIn, duplicatorOut;
 let dirUp, dirLeft, dirDown, dirRight;
 
 function setup() {
-    frameRate(10);
+    frameRate(30);
 
     boardSize = 60;
     cellSize = 15;
     sideBarSize = 60;
 
-    createCanvas(boardSize*cellSize + 200, boardSize*cellSize);
+    initCamera();
+
+    const htmlElm = document.querySelector("html");
+    createCanvas(htmlElm.clientWidth, htmlElm.clientHeight);
+    canvas.style = "display: flex;";
+    drawingContext.imageSmoothingEnabled = false;
 
     board = Array(boardSize);
     for (let x = 0; x < boardSize; x++)
@@ -51,17 +56,23 @@ function keyTyped() {
 }
 
 function draw() {
+    background("white");
+    
+    startCamera();
+
+    drawBoard(board);
+
+    stopCamera();
+
     for (let x = 0; x < cols.length; x++) {
         fill(cols[x]);
         rect(0, sideBarSize * x, 200, sideBarSize);
     }
     fill(play ? color(0, 255, 0) : color(255, 0, 0));
     rect(75, 500, 50, 50);
-    if (play) {
+    if (play && frameCount%6 === 0) {
         board = step(board);
     }
-    // } else if (mouseIsPressed) mouseDown();
-    drawBoard(board);
 }
 
 function drawBoard(board) {
@@ -162,13 +173,21 @@ function mouseClicked() {
 }
 
 function mouseDragged() {
-    if (mouseX < 200) {
-        if (mouseY < sideBarSize * cols.length) {
-            currCell = int(mouseY / sideBarSize);
-            print(currCell);
+    dragged = true;
+    const mouseTileX = Math.floor((mouseX - cameraPos.x)/zoom);
+    const mouseTileY = Math.floor((mouseY - cameraPos.y)/zoom);
+    if (mouseButton === LEFT) {
+        if (mouseX < 200) {
+            if (mouseY < sideBarSize * cols.length) {
+                currCell = int(mouseY / sideBarSize);
+                print(currCell);
+            }
+        } else if (mouseTileX >= 200 && mouseTileX <= boardSize*cellSize + 200 && mouseTileY <= boardSize*cellSize) {
+            board[int((mouseTileX - xOffset) / cellSize)][int((mouseTileY - yOffset) / cellSize)] = currCell;
         }
-    } else if (mouseX >= 200 && mouseX <= boardSize*cellSize + 200 && mouseY <= boardSize*cellSize) {
-        board[int((mouseX - xOffset) / cellSize)][int((mouseY - yOffset) / cellSize)] = currCell;
     }
-    print(mouseX, mouseY);
+}
+
+function mouseReleased() {
+    dragged = false;
 }
