@@ -11,6 +11,12 @@ body{
     align-items: center;
 }
 
+p{
+    font-family: 'Inter';
+    font-size: 16px;
+    color: #CCCAC2;
+}
+
 .form-container{
     /*background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.8));*/
     background-color: #8A9199;
@@ -32,6 +38,17 @@ body{
     min-width: 250px;
 }
 
+.form-container.item3{
+    width: 90%;
+    min-width: 250px;
+}
+
+.showCreateNewClass{
+    width: 90%;
+    min-width: 400px;
+    max-width: 400px;
+}
+
 .button-container{
     display: flex;
     align-self: stretch;
@@ -46,6 +63,37 @@ body{
     align-items: center;
     flex-direction: column;
     width: 100%;
+}
+
+.classpage-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.classes-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.class-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+h1{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+    color: #CCCAC2;
+    white-space: nowrap;
 }
 
 h2{
@@ -84,6 +132,15 @@ button, a.button, input[type=button]{
     cursor: pointer;
 }
 
+a.classButton{
+    width: 90%;
+    justify-content: left;
+    padding-left: 10px;
+    background-color: #8A9199;
+    color: #EAEAEA;
+    min-width: 400px;
+}
+
 a.link{
     height: 20px;
     margin: 5px 0 0 0;
@@ -93,12 +150,21 @@ a.link{
     color: #CCCAC2;
 }
 
+button.newclass{
+    min-width: 300px;
+}
+
+button.show{
+    min-width: 200px;
+}
+
 input[type=text]{
     margin: 5px;
     padding: 10px;
     border: 0;
     border-radius: 8px;
     width: 90%;
+    min-width: 250px;
     height: 18px;
     outline: none;
     background-color: #C4C4C4;
@@ -115,24 +181,6 @@ input[type=text]{
 label{
     font-size: 14px;
     font-family: 'Inter';
-}
-
-.top{
-    width: 317px;
-    height: 73px;
-    left: 111px;
-    top: 204px;
-    background-color: #8A9199;
-    border-radius: 10px 10px 0px 0px;
-}
-
-.bottom{
-    width: 317px;
-    height: 159px;
-    left: 111px;
-    top: 277px;
-    background-color: #DFDFDF;
-    border-radius: 0px 0px 10px 10px;
 }
 
 .logo{
